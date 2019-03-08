@@ -3,17 +3,23 @@
     <!-- <h1><router-link to="/">Sparrow Dashboard</router-link></h1> -->
 
     <div class="content">
-      <div class="header">
+      <!-- <div class="header">
         <img src="../../public/img/logo/logo-apple-touch-icon.png" alt="">
       </div>
       <hr class="hr-1">
-      <!-- <hr class="hr-2"> -->
-      <hr class="hr-3">
+      <hr class="hr-2">
+      <hr class="hr-3"> -->
       <div class="main">
-        <Graph class="grid-1" v-bind:graphConfig="firstConfig"></Graph>
-        <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph>
-        <Graph class="grid-3" v-bind:graphConfig="firstConfig"></Graph>
-        <Graph class="grid-4" v-bind:graphConfig="firstConfig"></Graph>
+        <div class="cards">
+          <Card v-bind:cardInfo="cardInfo"></Card>
+          <Card v-bind:cardInfo="cardInfo"></Card>
+          <Card v-bind:cardInfo="cardInfo"></Card>
+          <Card v-bind:cardInfo="cardInfo"></Card>
+        </div>
+        <div class="graphs">
+          <Graph class="grid-1" v-bind:graphConfig="this.firstConfig"></Graph>
+          <!-- <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph> -->
+        </div>
       </div>
     </div>
   </div>
@@ -39,7 +45,7 @@
   }
 
   .content {
-    padding: 32px;
+    padding: 24px;
     img {
       width: 100px;
       height: 100px;
@@ -59,21 +65,27 @@
     .hr-2 { width: 75%; }
     .hr-3 { width: 50%; }
   }
-
-  .main {
-    display: grid;
-    max-height: 100%;
-    grid-gap: 32px;
-    grid-template: 'first second' 'third fourth';
+  
+  .cards {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
   }
 
-  .home {
+  .graphs {
+    display: grid;
+    grid-gap: 24px;
+    grid-template: 'first second';
+
+
+    Graph {
+      // width: 100%;
+      // height: 100%;
+    }
   }
 
   .grid-1 { grid-area: first; }
   .grid-2 { grid-area: second; }
-  .grid-3 { grid-area: third; }
-  .grid-4 { grid-area: fourth; }
   
 </style>
 <script lang="ts">
@@ -81,75 +93,63 @@
 import { Component, Vue } from "vue-property-decorator";
 import {Chart} from 'chart.js';
 import Graph from '@/components/Graph.vue'
-import { ServiceProvider } from '@/ServiceProvider';
+import Card, { CardInfo } from '@/components/Card.vue';
+import ServiceProvider from '@/ServiceProvider';
 
 @Component({
-  components: { Graph }
+  components: { Graph, Card }
 })
 export default class Home extends Vue {
 
   async mounted() {
     let cards = await ServiceProvider.dataService.getCards();
     let customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
+    this.towGroup = ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(cards, customFields);
+    this.count = ServiceProvider.mapDataService.CardsCompletedCount(cards);
 
-    console.log(cards);
-    console.log(customFields);
+    console.log('init');
+    console.log(ServiceProvider.graphService.GetGraphForTOW(this.towGroup));
+
+    this.firstConfig = ServiceProvider.graphService.GetGraphForTOW(this.towGroup);
+  }
+
+  private _towGroup = null;
+  private _count = null;
+  private _firstConfig = null;
+
+  get towGroup() {
+    return this._towGroup;
+  }
+
+  set towGroup(val) {
+    this._towGroup = val;
+  }
+
+  get count() {
+    return this._count;
+  }
+
+  set count(val) {
+    this._count = val;
+  }
+
+  get cardInfo(): CardInfo {
+    return {
+      Title: '_'
+    }
   }
   
-  get firstConfig(): Chart.ChartConfiguration {
-    return {
-      type: 'bar',
-      data: {
-          labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-          datasets: [{
-              label: '# of Cards',
-              data: [12, 19, 3, 5, 2, 3],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-        responsive: true,
-        legend: {
-          labels: {
-            fontColor: 'white'
-          }
-        },
-        scales: {
-            yAxes: [{
-                gridLines: {
-                  display: true,
-                  color: '#fff'
-                },
-                ticks: {
-                    beginAtZero:true,
-                    fontColor: 'white'
-                }
-            }],
-            xAxes: [{
-              gridLines: {
-                  display: true,
-                  color: '#fff'
-                },
-            }]
-          }
-      }
-    }
+  get firstConfig() {
+    console.log(this);
+    return this._firstConfig || null;
+  }
+
+  set firstConfig(val) {
+    console.log('start set');
+    console.log(val);
+    this._firstConfig = val;
+    console.log('final set');
+    console.log(this._firstConfig);
   }
 }
 </script>

@@ -5,21 +5,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Chart } from 'chart.js';
 
 @Component
 export default class Graph extends Vue {
   
-  @Prop()
+  @Prop({required: true})
   graphConfig: Chart.ChartConfiguration;
 
   graph: Chart | undefined = undefined;
   
   id = Math.random();
 
-  mounted() {
-    console.log('mounted!');
+  @Watch('graphConfig')
+  draw() {
     var canvas = document.getElementById(`${this.id}`) as HTMLCanvasElement;
     if(canvas) {
       this.graph = new Chart(canvas.getContext('2d'), this.graphConfig);
@@ -32,11 +32,17 @@ export default class Graph extends Vue {
 <style scoped lang="scss">
   $accent: #666666;
   .graph {
-    position: relative;
-    height: 100%;
-    width: 100%;
+    padding: 32px;
+    // position: relative;
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 6px;
+    filter: drop-shadow(0px 4px 6px #313131);
+    background-color: $accent;
+    border-radius: 6px;
   }
   canvas {
-    background-color: $accent;
+    // position: absolute;
+    
   }
 </style>
