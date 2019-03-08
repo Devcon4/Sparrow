@@ -30,9 +30,13 @@ export default class Graph extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  $accent: #666666;
   .graph {
     position: relative;
     height: 100%;
     width: 100%;
+  }
+  canvas {
+    background-color: $accent;
   }
 </style>

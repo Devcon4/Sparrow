@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1><router-link to="/">Sparrow Dashboard</router-link></h1>
+    <!-- <h1><router-link to="/">Sparrow Dashboard</router-link></h1> -->
 
     <div class="content">
       <div class="header">
@@ -81,18 +81,28 @@
 import { Component, Vue } from "vue-property-decorator";
 import {Chart} from 'chart.js';
 import Graph from '@/components/Graph.vue'
+import { ServiceProvider } from '@/ServiceProvider';
 
 @Component({
   components: { Graph }
 })
 export default class Home extends Vue {
+
+  async mounted() {
+    let cards = await ServiceProvider.dataService.getCards();
+    let customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
+
+    console.log(cards);
+    console.log(customFields);
+  }
+  
   get firstConfig(): Chart.ChartConfiguration {
     return {
       type: 'bar',
       data: {
           labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
           datasets: [{
-              label: '# of Votes',
+              label: '# of Cards',
               data: [12, 19, 3, 5, 2, 3],
               backgroundColor: [
                   'rgba(255, 99, 132, 0.2)',
@@ -115,11 +125,27 @@ export default class Home extends Vue {
       },
       options: {
         responsive: true,
+        legend: {
+          labels: {
+            fontColor: 'white'
+          }
+        },
         scales: {
             yAxes: [{
+                gridLines: {
+                  display: true,
+                  color: '#fff'
+                },
                 ticks: {
-                    beginAtZero:true
+                    beginAtZero:true,
+                    fontColor: 'white'
                 }
+            }],
+            xAxes: [{
+              gridLines: {
+                  display: true,
+                  color: '#fff'
+                },
             }]
           }
       }

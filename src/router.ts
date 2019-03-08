@@ -4,12 +4,12 @@ import Home from "./views/Home.vue";
 
 Vue.use(Router);
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: "/",
       name: "home",
-      component: Home
+      component: Home,
     },
     {
       path: "/about",
@@ -22,3 +22,19 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach(async (to, from, next) => {
+  console.log(window['Trello']);
+  if(!window['Trello'].authorized()) {
+    window['Trello'].authorize({
+      name: 'Sparrow',
+      persist: true
+    });
+  } 
+
+  next();
+});
+
+export default router;
+
+
