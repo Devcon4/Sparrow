@@ -18,7 +18,7 @@
         </div>
         <div class="graphs">
           <Graph class="grid-1" v-bind:graphConfig="this.firstConfig"></Graph>
-          <!-- <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph> -->
+          <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph>
         </div>
       </div>
     </div>
@@ -76,12 +76,6 @@
     display: grid;
     grid-gap: 24px;
     grid-template: 'first second';
-
-
-    Graph {
-      // width: 100%;
-      // height: 100%;
-    }
   }
 
   .grid-1 { grid-area: first; }
@@ -115,7 +109,7 @@ export default class Home extends Vue {
 
   private _towGroup = null;
   private _count = null;
-  private _firstConfig = null;
+  public firstConfig = null;
 
   get towGroup() {
     return this._towGroup;
@@ -137,19 +131,6 @@ export default class Home extends Vue {
     return {
       Title: '_'
     }
-  }
-  
-  get firstConfig() {
-    console.log(this);
-    return this._firstConfig || null;
-  }
-
-  set firstConfig(val) {
-    console.log('start set');
-    console.log(val);
-    this._firstConfig = val;
-    console.log('final set');
-    console.log(this._firstConfig);
   }
 }
 </script>

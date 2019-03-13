@@ -18,12 +18,16 @@ export default class Graph extends Vue {
   
   id = Math.random();
 
-  @Watch('graphConfig')
+  @Watch('graphConfig', {immediate: true})
   draw() {
     var canvas = document.getElementById(`${this.id}`) as HTMLCanvasElement;
     if(canvas) {
       this.graph = new Chart(canvas.getContext('2d'), this.graphConfig);
     }
+  }
+
+  mounted() {
+    this.draw();
   }
 }
 </script>
@@ -33,9 +37,6 @@ export default class Graph extends Vue {
   $accent: #666666;
   .graph {
     padding: 32px;
-    // position: relative;
-    max-height: 100%;
-    max-width: 100%;
     border-radius: 6px;
     filter: drop-shadow(0px 4px 6px #313131);
     background-color: $accent;

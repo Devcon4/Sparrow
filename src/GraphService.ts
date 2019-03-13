@@ -28,18 +28,28 @@ export default class GraphService {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [{
-                label: '# of Cards',
-                data: [1],
-                backgroundColor: values.map((d, i) => this.graphColors[i%this.graphColors.length]),
-                borderColor: values.map((d, i) => this.borderColors[i%this.borderColors.length]),
+            datasets: [
+              ...values.map<Chart.ChartDataSets>((v, i) => ({
+                label: labels[i],
+                data: values,
+                backgroundColor: this.graphColors[i%this.graphColors.length],
+                borderColors: this.borderColors[i%this.borderColors.length],
                 borderWidth: 1
-            }]
+              }))]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 0,
+              right: 0,
+              bottom: 0,
+              top: 0
+            }
+          },
           legend: {
+            position: "left",
             labels: {
               fontColor: 'white'
             }
