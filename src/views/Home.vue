@@ -11,36 +11,33 @@
       <hr class="hr-3"> -->
       <div class="main">
         <div class="cards">
-          <Card v-bind:cardInfo="cardInfo"></Card>
-          <Card v-bind:cardInfo="cardInfo"></Card>
-          <Card v-bind:cardInfo="cardInfo"></Card>
-          <Card v-bind:cardInfo="cardInfo"></Card>
+          <Card v-bind:cardInfo="cardInfo()"></Card>
+          <Card v-bind:cardInfo="cardInfo()"></Card>
+          <Card v-bind:cardInfo="cardInfo()"></Card>
+          <Card v-bind:cardInfo="cardInfo()"></Card>
         </div>
         <div class="graphs">
           <Graph class="grid-1" v-bind:graphConfig="this.firstConfig"></Graph>
-          <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph>
+          <!-- <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph> -->
         </div>
       </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
-  $primary: #D61A00;
-  $primary-light: lighten($primary, 40%);
-  $accent: #666666;
-  $accent-light: lighten($accent, 40%);
+  @import '../styles';
 
   h1 {
     display: flex;
     font-size: 14px;
-    background-color: $primary-light;
+    background-color: $black;
     margin: 0;
     padding: 12px;
     filter: drop-shadow(0px 3px 3px rgb(224, 224, 224));
     
     a {
       font-weight: bold;
-      color: $primary;
+      color: $grayLight;
     }
   }
 
@@ -53,7 +50,7 @@
     
     hr {
       border-style: none;
-      border-bottom: 3px solid $accent;  
+      border-bottom: 3px solid $grayLight;  
     }
 
     .header {
@@ -75,7 +72,7 @@
   .graphs {
     display: grid;
     grid-gap: 24px;
-    grid-template: 'first second';
+    grid-template: 'first';
   }
 
   .grid-1 { grid-area: first; }
@@ -102,8 +99,7 @@ export default class Home extends Vue {
     this.count = ServiceProvider.mapDataService.CardsCompletedCount(cards);
 
     console.log('init');
-    console.log(ServiceProvider.graphService.GetGraphForTOW(this.towGroup));
-
+    console.log(this.towGroup);
     this.firstConfig = ServiceProvider.graphService.GetGraphForTOW(this.towGroup);
   }
 
@@ -127,9 +123,10 @@ export default class Home extends Vue {
     this._count = val;
   }
 
-  get cardInfo(): CardInfo {
+  cardInfo(): CardInfo {
     return {
-      Title: '_'
+      Title: '_',
+      Color: ['blue', 'green', 'purple', 'yellow'][Math.ceil(Math.random()*3)]
     }
   }
 }

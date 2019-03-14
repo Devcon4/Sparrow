@@ -1,5 +1,6 @@
 <template>
-  <div class="card">
+<!-- v-bind:class="cardInfo.Color" -->
+  <div class="card" v-bind:class="cardInfo.Color">
       <h1>{{cardInfo.Title}}</h1>
   </div>
 </template>
@@ -7,7 +8,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-export type CardInfo = { Title: string };
+export type CardInfo = { Title: string, Color: string };
 
 @Component
 export default class Card extends Vue {
@@ -23,24 +24,24 @@ export default class Card extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-    $accent: #666666;
-    $primary: #D61A00;
+  @import '../styles';
 
-    .card {
-        background-color: $accent;
-        width: 100%;
-        margin: 12px;
-        margin-top: 0px;
-        border-radius: 6px;
-        filter: drop-shadow(0px 4px 6px #313131);
+  .card {
+    width: 100%;
+    margin: 12px;
+    margin-top: 0px;
+    border-radius: 6px;
 
-        &:first-child {
-            margin-left: 0px;
-        }
+    background-color: $otherLight;
+    // filter: drop-shadow(0px 4px 6px #313131);
 
-        &:last-child {
-            margin-right: 0px;
-        }
+    &:first-child {
+        margin-left: 0px;
+    }
+
+    &:last-child {
+        margin-right: 0px;
+    }
   }
 
 </style>

@@ -4,40 +4,62 @@ import { fill, range, max } from 'lodash';
 export default class GraphService {
 
   graphColors = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(255, 206, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(255, 159, 64, 0.2)'
+      'rgba(39, 153, 247, .5)',
+      'rgba(17, 242, 182, .5)',
+      'rgba(192, 38, 212, .5)',
+      'rgba(255, 168, 31, .5)',
+      'rgba(93, 179, 249, .5)',
+      'rgba(77, 245, 200, .5)',
+      'rgba(208, 92, 223, .5)',
+      'rgba(255, 190, 87, .5)',
+      'rgba(29, 115, 185, .5)',
+      'rgba(13, 182, 137, .5)',
+      'rgba(144, 29, 159, .5)',
+      'rgba(191, 126, 23, .5)',
   ];
 
   borderColors = [
-    'rgba(255,99,132,1)',
-    'rgba(54, 162, 235, 1)',
-    'rgba(255, 206, 86, 1)',
-    'rgba(75, 192, 192, 1)',
-    'rgba(153, 102, 255, 1)',
-    'rgba(255, 159, 64, 1)'
+    'rgba(39, 153, 247, 1)',
+    'rgba(17, 242, 182, 1)',
+    'rgba(192, 38, 212, 1)',
+    'rgba(255, 168, 31, 1)',
+    'rgba(93, 179, 249, 1)',
+    'rgba(77, 245, 200, 1)',
+    'rgba(208, 92, 223, 1)',
+    'rgba(255, 190, 87, 1)',
+    'rgba(29, 115, 185, 1)',
+    'rgba(13, 182, 137, 1)',
+    'rgba(144, 29, 159, 1)',
+    'rgba(191, 126, 23, 1)',
   ];
 
-  public GetGraphForTOW(data: {[k: string]: number}): Chart.ChartConfiguration {
+  public GetGraphForTOW(data: {[k: string]: number} = {}): Chart.ChartConfiguration {
     let labels = Object.keys(data);
     let values = Object.values(data);
+    let empty = new Array(...values.map(v => new Array(values.length)));
+
     return {
-        type: 'bar',
+        type: 'pie',
         data: {
             labels: labels,
             datasets: [
-              ...values.map<Chart.ChartDataSets>((v, i) => ({
-                label: labels[i],
-                data: values,
-                backgroundColor: this.graphColors[i%this.graphColors.length],
-                borderColors: this.borderColors[i%this.borderColors.length],
-                borderWidth: 1
-              }))]
+              // ...values.map<Chart.ChartDataSets>((v, i) => ({
+              //   label: labels[i],
+              //   data: (empty[i][i] = v, empty[i]),
+              //   backgroundColor: this.graphColors[i%this.graphColors.length],
+              //   borderColor: this.borderColors[i%this.borderColors.length],
+              //   borderWidth: 1
+              // })),
+              {
+              label: '# of cards',
+              data: values,
+              backgroundColor: values.map((v, i) => this.graphColors[i%this.graphColors.length]),
+              borderColor: values.map((v, i) => this.borderColors[i%this.borderColors.length]),
+              borderWidth: 1
+            }]
         },
         options: {
+          cutoutPercentage: 60,
           responsive: true,
           maintainAspectRatio: false,
           layout: {
@@ -49,29 +71,32 @@ export default class GraphService {
             }
           },
           legend: {
-            position: "left",
+            position: 'left',
             labels: {
               fontColor: 'white'
             }
           },
-          scales: {
-            yAxes: [{
-              gridLines: {
-                display: true,
-                color: '#fff'
-              },
-              ticks: {
-                beginAtZero:true,
-                fontColor: 'white'
-              }
-            }],
-            xAxes: [{
-              gridLines: {
-                display: true,
-                color: '#fff'
-              },
-            }]
-          }
+          // scales: {
+          //   yAxes: [{
+          //     gridLines: {
+          //       display: false,
+          //       color: '#fff'
+          //     },
+          //     ticks: {
+          //       fontColor: 'white'
+          //     }
+          //   }],
+          //   xAxes: [{
+
+          //     gridLines: {
+          //       display: false,
+          //       color: '#fff'
+          //     },
+          //     ticks: {
+          //       fontColor: 'white'
+          //     }
+          //   }]
+          // }
         }
       };
     }

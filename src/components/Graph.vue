@@ -34,12 +34,13 @@ export default class Graph extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  $accent: #666666;
+  @import '../styles';
+
   .graph {
     padding: 32px;
     border-radius: 6px;
-    filter: drop-shadow(0px 4px 6px #313131);
-    background-color: $accent;
+    // filter: drop-shadow(0px 4px 6px #313131);
+    background-color: $otherLight;
     border-radius: 6px;
   }
   canvas {

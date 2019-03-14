@@ -18,21 +18,23 @@ import Nav from '@/components/Nav.vue';
 export default class App extends Vue {}
 </script>
 <style lang="scss">
+@import 'styles';
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: $grayMid;
   height: 100vh;
   overflow: auto;
-  background-color: #464646;
+  background-color: $other;
 }
 #nav {
   padding: 30px;
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color: $grayMid;
     &.router-link-exact-active {
       color: #42b983;
     }
