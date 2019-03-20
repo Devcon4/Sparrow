@@ -1,6 +1,6 @@
 <template>
 <!-- v-bind:class="cardInfo.Color" -->
-  <div class="card" v-bind:class="cardInfo.Color">
+  <div class="card">
       <h1>{{cardInfo.Title}}</h1>
   </div>
 </template>

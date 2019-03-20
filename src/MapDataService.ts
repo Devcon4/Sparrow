@@ -19,4 +19,13 @@ export default class MapDataService {
         codes.find(c => c.name === 'Type of Work').options.forEach(c => final[c.value.text] = grouped[c.id] || 0);
         return final;
     }
+
+    CardsGroupedByAgency(arr: cardType[], codes: customFieldCodes[]) {
+        let towField = codes.find(c => c.name === 'Project / Contract');
+        let normalizeTOW = arr.filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Project / Contract' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Project / Contract').id)}));
+        let grouped = countBy(normalizeTOW, d => d.field.idValue);
+        let final = {};
+        codes.find(c => c.name === 'Project / Contract').options.forEach(c => final[c.value.text] = grouped[c.id] || 0);
+        return final;
+    }
 }

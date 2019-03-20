@@ -17,8 +17,9 @@
           <Card v-bind:cardInfo="cardInfo()"></Card>
         </div>
         <div class="graphs">
-          <Graph class="grid-1" v-bind:graphConfig="this.firstConfig"></Graph>
-          <!-- <Graph class="grid-2" v-bind:graphConfig="firstConfig"></Graph> -->
+          <div class="grid-1">
+            <graph-select v-bind:cards="cards" v-bind:customFields="customFields"></graph-select>
+          </div>
         </div>
       </div>
     </div>
@@ -72,7 +73,7 @@
   .graphs {
     display: grid;
     grid-gap: 24px;
-    grid-template: 'first';
+    grid-template: 'first' 'second';
   }
 
   .grid-1 { grid-area: first; }
@@ -83,44 +84,27 @@
 
 import { Component, Vue } from "vue-property-decorator";
 import {Chart} from 'chart.js';
-import Graph from '@/components/Graph.vue'
 import Card, { CardInfo } from '@/components/Card.vue';
 import ServiceProvider from '@/ServiceProvider';
+import GraphSelect from '@/components/GraphSelect.vue'
+
 
 @Component({
-  components: { Graph, Card }
+  components: { GraphSelect, Card }
 })
 export default class Home extends Vue {
 
+  private _cards = [];
+  private _customFields = [];
+
+  public get cards() { return this._cards; }
+  public set cards(val) { this._cards = val; }
+  public get customFields() { return this._customFields; }
+  public set customFields(val) { this._customFields = val; }
+  
   async mounted() {
-    let cards = await ServiceProvider.dataService.getCards();
-    let customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
-    this.towGroup = ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(cards, customFields);
-    this.count = ServiceProvider.mapDataService.CardsCompletedCount(cards);
-
-    console.log('init');
-    console.log(this.towGroup);
-    this.firstConfig = ServiceProvider.graphService.GetGraphForTOW(this.towGroup);
-  }
-
-  private _towGroup = null;
-  private _count = null;
-  public firstConfig = null;
-
-  get towGroup() {
-    return this._towGroup;
-  }
-
-  set towGroup(val) {
-    this._towGroup = val;
-  }
-
-  get count() {
-    return this._count;
-  }
-
-  set count(val) {
-    this._count = val;
+    this.cards = await ServiceProvider.dataService.getCards();
+    this.customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
   }
 
   cardInfo(): CardInfo {
