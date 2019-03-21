@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Nav></Nav>
+    <!-- <Nav></Nav> -->
     <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -25,18 +25,18 @@ export default class App extends Vue {}
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: $grayMid;
+  color: $white;
   height: 100vh;
   overflow: auto;
-  background-color: $other;
+  background-color: $deepDusk;
 }
 #nav {
   padding: 30px;
   a {
     font-weight: bold;
-    color: $grayMid;
+    color: $blue;
     &.router-link-exact-active {
-      color: #42b983;
+      color: $purple;
     }
   }
 }

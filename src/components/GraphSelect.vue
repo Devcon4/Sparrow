@@ -1,13 +1,13 @@
 <template>
   <div>
-    <md-tabs>
+    <!-- <md-tabs>
       <md-tab id="tab-completed" md-label="Completed">
         <Graph v-bind:graphConfig="this.firstConfig"></Graph>
       </md-tab>
       <md-tab id="tab-agency" md-label="Per Agency">
         <Graph v-bind:graphConfig="this.secondConfig"></Graph>
       </md-tab>
-    </md-tabs>
+    </md-tabs> -->
   </div>
 </template>
 

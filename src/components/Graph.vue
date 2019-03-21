@@ -40,7 +40,6 @@ export default class Graph extends Vue {
     padding: 32px;
     border-radius: 6px;
     // filter: drop-shadow(0px 4px 6px #313131);
-    background-color: $otherLight;
     border-radius: 6px;
   }
   canvas {
