@@ -2,16 +2,16 @@
     <div class="overview">
         <div class="header">
             <h2>Overview</h2>
-            <Tabs v-bind:tabs="rangeTabs" ></Tabs>
+            <Tabs tabKey="range"></Tabs>
             <div class="spacer"></div>
-            <Tabs v-bind:tabs="graphTabs" ></Tabs>
+            <Tabs tabKey="category"></Tabs>
             <div class="button">
                 <button>DOWNLOAD EXCEL</button>
             </div>
         </div>
         <hr>
         <div class="graph">
-            <Graph v-bind:graphConfig="this.firstConfig"></Graph>
+            <!-- <Graph v-bind:graphConfig="this.firstConfig"></Graph> -->
         </div>
     </div>
 </template>
@@ -19,7 +19,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Tabs, { Tab } from '../components/Tabs.vue';
+import Tabs from '../components/Tabs.vue';
 import Graph from '../components/Graph.vue';
 
 @Component({
@@ -27,39 +27,48 @@ import Graph from '../components/Graph.vue';
 })
 export default class Overview extends Vue {
 
-    private rangeTabs: Tab[] = [
-        {
-            name: 'Today',
-            value: 'TODAY'
-        },
-        {
-            name: 'Week',
-            value: 'WEEK'
-        },
-        {
-            name: 'Sprint',
-            value: 'SPRINT'
-        },
-    ];
-
-    private graphTabs: Tab[] = [
-        {
-            name: 'Type of Work',
-            value: 'TOW'
-        },
-        {
-            name: 'Contract',
-            value: 'CONTRACT'
-        },
-        {
-            name: 'Owner',
-            value: 'OWNER'
-        },
-        {
-            name: 'Status',
-            value: 'STATUS'
-        }
-    ]
+    mounted() {
+        this.$store.commit('addTabRecord', [
+            'category', {
+            activeIndex: 0,
+            list: [
+                {
+                    name: 'Type of Work',
+                    value: 'TOW'
+                },
+                {
+                    name: 'Contract',
+                    value: 'CONTRACT'
+                },
+                {
+                    name: 'Owner',
+                    value: 'OWNER'
+                },
+                {
+                    name: 'Status',
+                    value: 'STATUS'
+                }
+            ]}
+        ]);
+        this.$store.commit('addTabRecord', [
+            'range', {
+            activeIndex: 0,
+            list: [
+                {
+                    name: 'Today',
+                    value: 'TODAY'
+                },
+                {
+                    name: 'Week',
+                    value: 'WEEK'
+                },
+                {
+                    name: 'Sprint',
+                    value: 'SPRINT'
+                }
+            ]}
+        ]);
+    }
 
 }
 </script>

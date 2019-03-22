@@ -1,39 +1,38 @@
 <template>
     <div class="tabs">
-        <button class="tab" v-on:click="select(tab, index)" v-bind:class="{active: active[index]}" v-for="(tab, index) in tabs" v-bind:key="tab.name">{{tab.name}}</button>
+        <button class="tab" v-on:click="select({...tab}, index)" v-bind:class="{active: isActive(index)}" v-for="(tab, index) in list" :key="tab.name">{{tab.name}}</button>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
-
-export class Tab {
-    name: string;
-    value: string;
-}
+import { Prop, Watch } from 'vue-property-decorator';
+import Tab from '../models/Tab';
 
 @Component
 export default class Tabs extends Vue {
 
     @Prop()
-    private tabs: Tab[] = [];
+    private tabKey: string = 'range';
 
-    @Prop()
-    private action: (tab: Tab) => void;
+    private get key() { return this.tabKey; }
 
-    @Prop()
-    private colorClass: {[key: string]: string} = {};
+    get list() {
+        return this.$store.getters.getTab(this.tabKey).list;
+    }
 
-    private active: {[key: number]: boolean} = {0: true};
+    get activeIndex() {
+        console.log('active index changed');
+        return this.$store.getters.getTab(this.tabKey).activeIndex;
+    }
+
+    isActive(index) {
+        return this.activeIndex === index;
+    }
 
     select(tab: Tab, index: number) {
-        this.active = {};
-        this.active[index] = true;
-        if(this.action) {
-            this.action(tab);
-        }
+        this.$store.commit('updateTabActiveIndex', [this.key, index]);
     }
 
 }
