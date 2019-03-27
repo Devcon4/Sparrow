@@ -2,16 +2,18 @@
     <div class="overview">
         <div class="header">
             <h2>Overview</h2>
-            <Tabs tabKey="range"></Tabs>
+            <Tabs :tabState="tabs.range" color="blue"></Tabs>
             <div class="spacer"></div>
-            <Tabs tabKey="category"></Tabs>
+            <Tabs :tabState="tabs.category" :action="changeCategory"></Tabs>
             <div class="button">
                 <button>DOWNLOAD EXCEL</button>
             </div>
         </div>
         <hr>
         <div class="graph">
-            <!-- <Graph v-bind:graphConfig="this.firstConfig"></Graph> -->
+            <div class="graph-wrapper" v-for="graph in graphs" :key="graph.code">
+                <GraphComp v-if="graph.code === selectedGraph.code" v-bind:graphConfig="graph"></GraphComp>
+            </div>
         </div>
     </div>
 </template>
@@ -20,25 +22,55 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import Tabs from '../components/Tabs.vue';
-import Graph from '../components/Graph.vue';
+import GraphComp from '../components/Graph.vue';
+import { mapState, mapMutations } from 'vuex';
+import ServiceProvider from '@/ServiceProvider';
+import Tab from '@/models/Tab';
+import { GraphTypes } from '@/models/GraphTypes';
 
 @Component({
-    components: { Tabs, Graph }
+    components: { Tabs, GraphComp },
+    computed: mapState(['tabs', 'selectedGraph', 'graphs'])
 })
 export default class Overview extends Vue {
+    async mounted() {
+        this.setTabs();
+        await this.loadGraphData();
+    }
 
-    mounted() {
-        this.$store.commit('addTabRecord', [
-            'category', {
+    async loadGraphData() {
+        let cards = await ServiceProvider.dataService.getCards();
+        let customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
+
+
+        let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(cards, customFields));
+        let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency(cards, customFields));
+
+        let graphs = [
+            CountPerTOW,
+            CountPerAgency
+        ];
+
+        this.$store.commit('setGraphList', graphs);
+        this.$store.commit('setSelectedGraph', graphs[0]);
+    }
+
+    changeCategory(tab: Tab) {
+        this.$store.commit('setCategoryFilter', tab);
+        this.$store.dispatch('updateSelectedGraph');
+    }
+
+    setTabs() {
+        this.$store.commit('setCategoryTabs', {
             activeIndex: 0,
             list: [
                 {
                     name: 'Type of Work',
-                    value: 'TOW'
+                    value: GraphTypes.CountPerTOW
                 },
                 {
                     name: 'Contract',
-                    value: 'CONTRACT'
+                    value: GraphTypes.CountPerAgency
                 },
                 {
                     name: 'Owner',
@@ -48,10 +80,10 @@ export default class Overview extends Vue {
                     name: 'Status',
                     value: 'STATUS'
                 }
-            ]}
-        ]);
-        this.$store.commit('addTabRecord', [
-            'range', {
+            ]
+        });
+
+        this.$store.commit('setRangeTabs', {
             activeIndex: 0,
             list: [
                 {
@@ -66,10 +98,10 @@ export default class Overview extends Vue {
                     name: 'Sprint',
                     value: 'SPRINT'
                 }
-            ]}
-        ]);
-    }
-
+            ]
+        });
+        this.$forceUpdate();
+    }    
 }
 </script>
 
@@ -77,6 +109,8 @@ export default class Overview extends Vue {
 @import '../styles';
 
     .overview {
+        display: flex;
+        flex-direction: column;
         margin: 24px;
         margin-bottom: 0;
         margin-top: 30;
@@ -86,6 +120,22 @@ export default class Overview extends Vue {
         // border-top-left-radius: 100px;
         // box-shadow: inset 100px 100px 600px $deepDusk;
         // filter: blur(25px);
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .graph {
+        height: 100%;
+        overflow: hidden;
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    .graph-wrapper {
+        // height: 100%;
+        // width: 100%;
     }
 
     .header {

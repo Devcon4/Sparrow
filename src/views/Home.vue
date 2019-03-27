@@ -103,8 +103,7 @@ export default class Home extends Vue {
   public set customFields(val) { this._customFields = val; }
   
   async mounted() {
-    this.cards = await ServiceProvider.dataService.getCards();
-    this.customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
+
   }
 
   cardInfo(): CardInfo {

@@ -1,6 +1,6 @@
 <template>
-    <div class="tabs">
-        <button class="tab" v-on:click="select({...tab}, index)" v-bind:class="{active: isActive(index)}" v-for="(tab, index) in list" :key="tab.name">{{tab.name}}</button>
+    <div class="tabs" :class="{[color]: true}" v-if="!!tabState">
+        <button class="tab" v-on:click="select({...tab}, index)" v-bind:class="{active: (selected === index)}" v-for="(tab, index) in tabState.list" :key="tab.name">{{tab.name}}</button>
     </div>
 </template>
 
@@ -9,32 +9,30 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import Tab from '../models/Tab';
+import { tabType } from '@/models/TabType';
 
 @Component
 export default class Tabs extends Vue {
 
     @Prop()
-    private tabKey: string = 'range';
+    private tabState: tabType;
 
-    private get key() { return this.tabKey; }
+    @Prop({
+        default: 'yellow'
+    })
+    private color: 'blue' | 'green' | 'yellow' | 'purple';
 
-    get list() {
-        return this.$store.getters.getTab(this.tabKey).list;
-    }
+    @Prop()
+    private action?: (tab: Tab, index: number) => void; 
 
-    get activeIndex() {
-        console.log('active index changed');
-        return this.$store.getters.getTab(this.tabKey).activeIndex;
-    }
-
-    isActive(index) {
-        return this.activeIndex === index;
-    }
+    private selected = 0;
 
     select(tab: Tab, index: number) {
-        this.$store.commit('updateTabActiveIndex', [this.key, index]);
+        this.selected = index;
+        if(this.action) {
+            this.action(tab, index);
+        }
     }
-
 }
 </script>
 
@@ -58,24 +56,23 @@ export default class Tabs extends Vue {
         background-color: inherit;
         outline: none;
 
-        transition: all 250ms linear;
+        transition: background-color border 250ms linear;
 
         &:hover {
             cursor: pointer;
-            background-color: $yellow;
         }
     }
 
-    .active {
-        border: 1px solid $yellow;
-    }
+    // .active {
+    //     border: 1px solid $yellow;
+    // }
 
     .yellow {
         button:hover {
             background-color: $yellow;
         }
 
-        .action {
+        .active {
             border: 1px solid $yellow;
         }
     }
@@ -84,7 +81,7 @@ export default class Tabs extends Vue {
             background-color: $blue;
         }
 
-        .action {
+        .active {
             border: 1px solid $blue;
         }
     }
@@ -93,7 +90,7 @@ export default class Tabs extends Vue {
             background-color: $green;
         }
 
-        .action {
+        .active {
             border: 1px solid $green;
         }
     }
@@ -103,7 +100,7 @@ export default class Tabs extends Vue {
             background-color: $purple;
         }
 
-        .action {
+        .active {
             border: 1px solid $purple;
         }
     }

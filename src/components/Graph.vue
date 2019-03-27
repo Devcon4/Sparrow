@@ -1,28 +1,31 @@
 <template>
   <div class="graph">
-    <canvas v-bind:id="id"></canvas>
+    <div class="wrapper">
+      <canvas v-bind:id="id"></canvas>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Chart } from 'chart.js';
+import Graph from '@/models/Graph.ts';
 
 @Component
-export default class Graph extends Vue {
+export default class GraphComp extends Vue {
   
   @Prop({required: true})
-  graphConfig: Chart.ChartConfiguration;
+  graphConfig: Graph;
 
   graph: Chart | undefined = undefined;
   
   id = Math.random();
 
-  @Watch('graphConfig', {immediate: true})
+  @Watch('graphConfig')
   draw() {
     var canvas = document.getElementById(`${this.id}`) as HTMLCanvasElement;
-    if(canvas) {
-      this.graph = new Chart(canvas.getContext('2d'), this.graphConfig);
+    if(canvas && this.graphConfig) {
+      this.graph = new Chart(canvas.getContext('2d'), this.graphConfig.config);
     }
   }
 
@@ -37,6 +40,12 @@ export default class Graph extends Vue {
   @import '../styles';
 
   .graph {
+    display: flex;
+  }
+
+  .wrapper {
+    // height: 100%;
+    // width: 100%;
     padding: 32px;
     border-radius: 6px;
     // filter: drop-shadow(0px 4px 6px #313131);
