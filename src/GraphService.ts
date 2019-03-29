@@ -115,6 +115,7 @@ export default class GraphService {
                   color: '#fff'
                 },
                 ticks: {
+                  autoSkip: false,
                   fontColor: 'white'
                 }
               }]
@@ -122,8 +123,79 @@ export default class GraphService {
           }
       }
     });
+  }
 
-    return 
+  public GetGraphForStatus(data: {[k: string]: number} = {}): Graph {
+    let labels = Object.keys(data);
+    let values = Object.values(data);
+    let empty = new Array(...values.map(v => new Array(values.length)));
+
+    return new Graph({
+      code: GraphTypes.CountPerAgency,
+      config: {
+        type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [
+                // ...values.map<Chart.ChartDataSets>((v, i) => ({
+                //   label: labels[i],
+                //   data: (empty[i][i] = v, empty[i]),
+                //   backgroundColor: this.graphColors[i%this.graphColors.length],
+                //   borderColor: this.borderColors[i%this.borderColors.length],
+                //   borderWidth: 1
+                // })),
+                {
+                label: '# of cards',
+                data: values,
+                backgroundColor: values.map((v, i) => this.graphColors[i%this.graphColors.length]),
+                borderColor: values.map((v, i) => this.borderColors[i%this.borderColors.length]),
+                borderWidth: 1
+              }]
+          },
+          options: {
+            cutoutPercentage: 60,
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: {
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0
+              }
+            },
+            legend: {
+              display: false,
+              position: 'left',
+              labels: {
+                fontColor: 'white'
+              }
+            },
+            scales: {
+              yAxes: [{
+                gridLines: {
+                  display: false,
+                  color: '#666'
+                },
+                ticks: {
+                  fontColor: 'white'
+                }
+              }],
+              xAxes: [{
+  
+                gridLines: {
+                  display: false,
+                  color: '#fff'
+                },
+                ticks: {
+                  autoSkip: false,
+                  fontColor: 'white'
+                }
+              }]
+            }
+          }
+      }
+    });
   }
 
   public GetGraphForTOW(data: {[k: string]: number} = {}): Graph {
@@ -166,7 +238,7 @@ export default class GraphService {
             }
           },
           legend: {
-            display: false,
+            display: true,
             position: 'left',
             labels: {
               fontColor: 'white'

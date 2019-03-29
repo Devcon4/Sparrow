@@ -11,8 +11,8 @@
             <div class="desc">Fly-by workload data visualizations</div>
         </div>
         <div class="team">
-            <div>TEAM DATA</div>
-            <ProfileCard></ProfileCard>
+            <div class="team-header">TEAM DATA</div>
+            <ProfileCard v-for="member in members" :key="member.id" :member="member"></ProfileCard>
         </div>
     </div>
 </template>
@@ -21,9 +21,11 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import ProfileCard from '../components/ProfileCard.vue';
+import { mapState } from 'vuex';
 
 @Component({
-    components: { ProfileCard }
+    components: { ProfileCard },
+    computed: mapState(['members'])
 })
 export default class Sidebar extends Vue {
 
@@ -32,6 +34,10 @@ export default class Sidebar extends Vue {
 
 <style lang="scss" scoped>
     @import '../styles';
+
+    .team-header {
+        padding-bottom: 12px;
+    }
 
     .team {
         margin-top: 120px;

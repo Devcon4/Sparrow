@@ -45,7 +45,7 @@ export default class GraphComp extends Vue {
 
   .wrapper {
     // height: 100%;
-    // width: 100%;
+    width: 100%;
     padding: 32px;
     border-radius: 6px;
     // filter: drop-shadow(0px 4px 6px #313131);

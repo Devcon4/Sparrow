@@ -3,6 +3,11 @@ $green: #11f2b6;
 $purple: #c026d4;
 $yellow: #ffa81f;
 
+$deepBlue: #2763A0;
+$deepGreen: #1C8F7F;
+$deepPurple: #73298E;
+$deepYellow: #936A34;
+
 $black: #000;
 $white: #fff;
 $deepDusk: #16093B;
@@ -30,3 +35,9 @@ $greenShade: shade($green, 25%);
 $purpleShade: shade($purple, 25%);
 $yellowShade: shade($yellow, 25%);
 $animSpeed: 28s;
+
+* {
+    font-family: europa, sans-serif;
+    font-style: normal;
+    font-weight: 300;
+}

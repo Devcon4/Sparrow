@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import Tab from './models/Tab';
 import { tabType } from './models/TabType';
 import Graph from './models/Graph';
+import Member from './models/Member';
 
 Vue.use(Vuex);
 
@@ -15,7 +16,9 @@ class State {
   public selectedRange: Tab = null;
   public selectedCategory: Tab = null;
   public selectedGraph: Graph = null;
-  public graphs: Graph[] = []; 
+  public graphs: Graph[] = [];
+  public cards: any[] = [];
+  public members: Member[] = [];
 }
 
 export default new Vuex.Store({
@@ -36,6 +39,9 @@ export default new Vuex.Store({
       state.tabs.range = {...data};
       state.selectedRange = state.tabs.range.list[0];
     },
+    setMemberList(state, list) {
+      state.members = [...list];
+    },
     setGraphList(state, list) {
       state.graphs = [...list];
     },
@@ -48,6 +54,9 @@ export default new Vuex.Store({
     setCategoryFilter(state, tab) {
       state.selectedCategory = tab;
     },
+    setCardList(state, list) {
+      state.cards = list;
+    }
   },
   getters: {},
   actions: {
