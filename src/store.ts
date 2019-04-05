@@ -4,6 +4,7 @@ import Tab from './models/Tab';
 import { tabType } from './models/TabType';
 import Graph from './models/Graph';
 import Member from './models/Member';
+import { customFieldCodeOptions } from './MapDataService';
 
 Vue.use(Vuex);
 
@@ -19,6 +20,8 @@ class State {
   public graphs: Graph[] = [];
   public cards: any[] = [];
   public members: Member[] = [];
+  public sprints: customFieldCodeOptions[] = [];
+  public currentSprintId: string = null;
 }
 
 export default new Vuex.Store({
@@ -56,6 +59,12 @@ export default new Vuex.Store({
     },
     setCardList(state, list) {
       state.cards = list;
+    },
+    setSprintList(state, list) {
+      state.sprints = list;
+    },
+    setCurrentSprintId(state, id) {
+      state.currentSprintId = id;
     }
   },
   getters: {},

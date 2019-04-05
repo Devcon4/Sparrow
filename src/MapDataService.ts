@@ -2,10 +2,10 @@
 import { countBy, groupBy } from 'lodash';
 import Card from './models/Card';
 import Member from './models/Member';
-type customFieldItems = { id: string, idCustomField: string, idModel: string, idValue: string, modeltype: string};
-type cardType = { customFieldItems: customFieldItems[], id: string, name: string, idMembers: string[], closed: boolean};
-type customFieldCodeOptions = {value: any, idCustomField: string, id: string};
-type customFieldCodes = {id: string, options: customFieldCodeOptions[], name: string};
+export type customFieldItems = { id: string, idCustomField: string, idModel: string, idValue: string, modeltype: string};
+export type cardType = { customFieldItems: customFieldItems[], id: string, name: string, idMembers: string[], closed: boolean};
+export type customFieldCodeOptions = {value: any, idCustomField: string, id: string};
+export type customFieldCodes = {id: string, options: customFieldCodeOptions[], name: string};
 
 export default class MapDataService {
 
@@ -34,5 +34,9 @@ export default class MapDataService {
         let final = {};
         codes.find(c => c.name === 'Project / Contract').options.forEach(c => final[c.value.text] = grouped[c.id] || 0);
         return final;
+    }
+
+    SprintListFromCustomData(arr: customFieldCodes[]) {
+        return arr.find(a => a.name === 'Sprint').options;
     }
 }

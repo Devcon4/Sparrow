@@ -59,6 +59,7 @@ export default class Overview extends Vue {
 
         this.$store.commit('setMemberList', members);
         this.$store.commit('setCardList', ServiceProvider.mapDataService.CardsToDataTile(cards, customFields, members));
+        this.$store.commit('setSprintList', ServiceProvider.mapDataService.SprintListFromCustomData(customFields));
         this.$store.commit('setGraphList', graphs);
         this.$store.commit('setSelectedGraph', graphs[0]);
     }
