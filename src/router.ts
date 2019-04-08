@@ -28,10 +28,9 @@ router.beforeEach(async (to, from, next) => {
   if(!window['Trello'].authorized()) {
     window['Trello'].authorize({
       name: 'Sparrow',
-      persist: true
+      success: () => router.push('/')
     });
-  } 
-
+  }
   next();
 });
 
