@@ -1,3 +1,4 @@
+
 $blue: #2799f7;
 $green: #11f2b6;
 $purple: #c026d4;
@@ -41,3 +42,14 @@ $animSpeed: 28s;
     font-style: normal;
     font-weight: 300;
 }
+
+// Vue-Material Theme.
+@import "~vue-material/dist/theme/engine"; // Import the theme engine
+
+@include md-register-theme("default", (
+  primary: $deepDusk, // The primary color of your application
+  accent: $purple, // The accent or secondary color
+  theme: dark
+));
+
+@import "~vue-material/dist/theme/all"; // Apply the theme

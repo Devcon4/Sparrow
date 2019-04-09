@@ -1,9 +1,17 @@
 <template>
     <div class="header">
-        <input type="text" list="sprint_list" v-model="currentSprintId">
+        <div class="sprint-wrapper">
+            <md-field class="sprint-input">
+            <label for="sprint">Sprint</label>
+            <md-select v-model="currentSprintId" name="sprint" id="sprint">
+                <md-option v-for="sprint in sprints" :key="sprint.id" :value="sprint.id">{{sprint.value.text}}</md-option>
+            </md-select>
+            </md-field>
+        </div>
+        <!-- <input type="text" list="sprint_list" v-model="currentSprintId">
         <datalist name="sprint" id="sprint_list">
             <option v-for="sprint in sprints" :key="sprint.id" :value="sprint.id">{{sprint.value.text}}</option>
-        </datalist>
+        </datalist> -->
     </div>
 </template>
 
@@ -43,13 +51,26 @@ export default class Header extends Vue {
         border-bottom-right-radius: 24px;
     }
 
-    input {
+    .sprint-input {
+        width: 100%;
+    }
+
+    .sprint-wrapper {
         width: 10%;
-        border-radius: 8px;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        color: white;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
         background-color: $purple;
         outline: none;
         border: 0px;
         color: white;
+
+        * {
+            background-color: --md-theme-default-primary;
+        }
 
         &:hover {
             cursor: pointer;
