@@ -48,9 +48,6 @@ export default class Overview extends Vue {
         let customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
         let members = await ServiceProvider.dataService.getBoardMembers();
 
-        console.log(cards);
-        console.log(customFields);
-
         let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork({arr: cards, codes: customFields}));
         let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency({arr: cards, codes: customFields}));
 
