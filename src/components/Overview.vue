@@ -3,7 +3,7 @@
         <div class="header">
             <h2>Overview</h2>
             <div class="spacer"></div>
-            <Tabs :tabState="tabs.category" :action="changeCategory"></Tabs>
+            <Tabs v-if="!!tabs" :tabState="tabs.category" :action="changeCategory"></Tabs>
             <div class="button">
                 <button>DOWNLOAD EXCEL</button>
             </div>

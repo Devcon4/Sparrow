@@ -7,7 +7,7 @@ import Member from './models/Member';
 import { customFieldCodeOptions, customFieldCodes, cardType } from './MapDataService';
 import ServiceProvider from './ServiceProvider';
 import Card from './models/Card';
-
+// import createLogger from 'vuex/dist/logger';
 Vue.use(Vuex);
 
 class State {
@@ -109,6 +109,10 @@ export function filterGraphs() {
 
   return (store: Store<State>) => {
     store.subscribe((mut, state) => {
+      console.group(mut.type);
+      console.log(mut);
+      console.log(state);
+      console.groupEnd();
       if(watchMuts.includes(mut.type)) {
         store.dispatch('updateAllGraphs');
       }

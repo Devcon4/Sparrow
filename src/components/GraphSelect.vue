@@ -35,9 +35,9 @@ export default class GraphSelect extends Vue {
   public secondConfig = null;
 
   mounted() {
-    this.towGroup = ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(this.cards, this.customFields);
-    this.agencyGroup = ServiceProvider.mapDataService.CardsGroupedByAgency(this.cards, this.customFields);
-    this.count = ServiceProvider.mapDataService.CardsCompletedCount(this.cards);
+    this.towGroup = ServiceProvider.mapDataService.CardsGroupedByTypeOfWork({arr: this.cards, codes: this.customFields});
+    this.agencyGroup = ServiceProvider.mapDataService.CardsGroupedByAgency({arr: this.cards, codes: this.customFields});
+    this.count = ServiceProvider.mapDataService.CardsCompletedCount({arr: this.cards});
 
     console.log('init');
     console.log(this.towGroup);

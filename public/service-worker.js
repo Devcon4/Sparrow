@@ -323,6 +323,7 @@ class lifecycleServiceWorker {
         console.log('up from class!');
 
         self.addEventListener('message', async function(event) {
+          console.log(event);
             if(event.data.command === 'DumpState'){
                 idbAccess.clear();
                 Object.keys(event.data.payload).forEach(async k => {

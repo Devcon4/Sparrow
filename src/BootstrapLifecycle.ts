@@ -42,25 +42,9 @@ export default class BootstrapLifecycle {
         }
     }
 
-    stripFuncs(data: any) {
-        let mut = {...data};
-        let keys = Object.keys(mut);
-        keys.forEach(k => {
-            if(typeof(k)==='function') {
-                console.log('deleted ' + k);
-                delete mut[k];
-            } else if(typeof(k)==='object') {
-                mut[k] = this.stripFuncs(mut[k]);
-            }
-        });
-        console.log(mut);
-        return mut;
-    }
-
     setData(data: any) {
         console.log(data);
         if (navigator && navigator.serviceWorker && navigator.serviceWorker.controller) {
-            data = this.stripFuncs(data);
             this.messageChannel = new MessageChannel();
             navigator.serviceWorker.controller.postMessage({command: cacheActions.DumpState, payload: data  }, [this.messageChannel.port2]);
         }
