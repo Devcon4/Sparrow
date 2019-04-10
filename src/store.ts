@@ -1,10 +1,12 @@
 import Vue from "vue";
-import Vuex from "vuex";
+import Vuex, { Store } from "vuex";
 import Tab from './models/Tab';
 import { tabType } from './models/TabType';
 import Graph from './models/Graph';
 import Member from './models/Member';
-import { customFieldCodeOptions } from './MapDataService';
+import { customFieldCodeOptions, customFieldCodes, cardType } from './MapDataService';
+import ServiceProvider from './ServiceProvider';
+import Card from './models/Card';
 
 Vue.use(Vuex);
 
@@ -18,10 +20,12 @@ class State {
   public selectedCategory: Tab = null;
   public selectedGraph: Graph = null;
   public graphs: Graph[] = [];
-  public cards: any[] = [];
+  public cards: Card[] = [];
+  public cardsRaw: cardType[] = [];
   public members: Member[] = [];
   public sprints: customFieldCodeOptions[] = [];
   public currentSprintId: string = null;
+  public codes: customFieldCodes[] = [];
 }
 
 export default new Vuex.Store({
@@ -31,6 +35,7 @@ export default new Vuex.Store({
       range: null
     }
   }),
+  plugins: [filterGraphs()],
   mutations: {
     setCategoryTabs(state, data) {
       if(!state.tabs) { state.tabs = {}; }
@@ -65,10 +70,29 @@ export default new Vuex.Store({
     },
     setCurrentSprintId(state, id) {
       state.currentSprintId = id;
+    },
+    setCodeList(state, codes) {
+      state.codes = codes;
+    },
+    setCardRawList(state, cards) {
+      state.cardsRaw = cards;
     }
   },
   getters: {},
   actions: {
+    updateAllGraphs({commit, state}) {
+      if(state.cards && state.codes && state.members && state.currentSprintId) {
+        let data = {arr: state.cardsRaw, codes: state.codes, members: state.members, currentSprint: state.currentSprintId};
+        let newGraphs = [];
+        state.graphs.forEach((g, i) => {
+          let newData = ServiceProvider.graphService.graphTypeToMethodMap[g.code](ServiceProvider.mapDataService.graphTypeToMethodMap[g.code](data));
+          newGraphs.push(newData);
+        });
+
+        commit('setCardList', ServiceProvider.mapDataService.CardsToDataTile(data));
+        commit('setGraphList', newGraphs);
+      }
+    },
     updateSelectedGraph({commit, state}) {
       if(state.selectedCategory && state.graphs) {
         let found = state.graphs.find(g => g.code === state.selectedCategory.value);
@@ -79,3 +103,15 @@ export default new Vuex.Store({
     }
   }
 });
+
+export function filterGraphs() {
+  let watchMuts = ['setCardRawList', 'setSprintList', 'setMemberList', 'setCodeList', 'setCurrentSprintId'];
+
+  return (store: Store<State>) => {
+    store.subscribe((mut, state) => {
+      if(watchMuts.includes(mut.type)) {
+        store.dispatch('updateAllGraphs');
+      }
+    });
+  };
+}

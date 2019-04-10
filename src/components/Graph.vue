@@ -25,6 +25,9 @@ export default class GraphComp extends Vue {
   draw() {
     var canvas = document.getElementById(`${this.id}`) as HTMLCanvasElement;
     if(canvas && this.graphConfig) {
+      if(!!this.graph) {
+        this.graph.destroy();
+      }
       this.graph = new Chart(canvas.getContext('2d'), {...this.graphConfig.config});
     }
   }

@@ -22,7 +22,7 @@ export default class GraphService {
   Total time spent per agency/project
   */
 
-  graphColors = [
+  static graphColors = [
       'rgba(39, 153, 247, .5)',
       'rgba(17, 242, 182, .5)',
       'rgba(192, 38, 212, .5)',
@@ -37,7 +37,7 @@ export default class GraphService {
       'rgba(191, 126, 23, .5)',
   ];
 
-  borderColors = [
+  static borderColors = [
     'rgba(39, 153, 247, 1)',
     'rgba(17, 242, 182, 1)',
     'rgba(192, 38, 212, 1)',
@@ -51,6 +51,11 @@ export default class GraphService {
     'rgba(144, 29, 159, 1)',
     'rgba(191, 126, 23, 1)',
   ];
+
+  public graphTypeToMethodMap = {
+    [GraphTypes.CountPerAgency]: this.GetGraphForTasksPerAgency,
+    [GraphTypes.CountPerTOW]: this.GetGraphForTOW,
+  }
 
   public GetGraphForTasksPerAgency(data: {[k: string]: number} = {}): Graph {
     let labels = Object.keys(data);
@@ -74,8 +79,8 @@ export default class GraphService {
                 {
                 label: '# of cards',
                 data: values,
-                backgroundColor: values.map((v, i) => this.graphColors[i%this.graphColors.length]),
-                borderColor: values.map((v, i) => this.borderColors[i%this.borderColors.length]),
+                backgroundColor: values.map((v, i) => GraphService.graphColors[i%GraphService.graphColors.length]),
+                borderColor: values.map((v, i) => GraphService.borderColors[i%GraphService.borderColors.length]),
                 borderWidth: 1
               }]
           },
@@ -147,8 +152,8 @@ export default class GraphService {
                 {
                 label: '# of cards',
                 data: values,
-                backgroundColor: values.map((v, i) => this.graphColors[i%this.graphColors.length]),
-                borderColor: values.map((v, i) => this.borderColors[i%this.borderColors.length]),
+                backgroundColor: values.map((v, i) => GraphService.graphColors[i%GraphService.graphColors.length]),
+                borderColor: values.map((v, i) => GraphService.borderColors[i%GraphService.borderColors.length]),
                 borderWidth: 1
               }]
           },
@@ -220,8 +225,8 @@ export default class GraphService {
               {
               label: '# of cards',
               data: values,
-              backgroundColor: values.map((v, i) => this.graphColors[i%this.graphColors.length]),
-              borderColor: values.map((v, i) => this.borderColors[i%this.borderColors.length]),
+              backgroundColor: values.map((v, i) => GraphService.graphColors[i%GraphService.graphColors.length]),
+              borderColor: values.map((v, i) => GraphService.borderColors[i%GraphService.borderColors.length]),
               borderWidth: 1
             }]
         },

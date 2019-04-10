@@ -49,8 +49,8 @@ export default class Overview extends Vue {
         console.log(cards);
         console.log(customFields);
 
-        let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(cards, customFields));
-        let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency(cards, customFields));
+        let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork({arr: cards, codes: customFields}));
+        let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency({arr: cards, codes: customFields}));
 
         let graphs = [
             CountPerTOW,
@@ -58,10 +58,12 @@ export default class Overview extends Vue {
         ];
 
         this.$store.commit('setMemberList', members);
-        this.$store.commit('setCardList', ServiceProvider.mapDataService.CardsToDataTile(cards, customFields, members));
-        this.$store.commit('setSprintList', ServiceProvider.mapDataService.SprintListFromCustomData(customFields));
+        this.$store.commit('setCodeList', customFields);
+        this.$store.commit('setCardList', ServiceProvider.mapDataService.CardsToDataTile({arr: cards, codes: customFields, members: members}));
+        this.$store.commit('setSprintList', ServiceProvider.mapDataService.SprintListFromCustomData({codes: customFields}));
         this.$store.commit('setGraphList', graphs);
         this.$store.commit('setSelectedGraph', graphs[0]);
+        this.$store.commit('setCardRawList', cards);
     }
 
     changeCategory(tab: Tab) {
