@@ -10,7 +10,7 @@ import Card from './models/Card';
 // import createLogger from 'vuex/dist/logger';
 Vue.use(Vuex);
 
-class State {
+export class State {
   constructor(args: Partial<State>) {
     Object.assign({},this, args);
   }
@@ -109,7 +109,7 @@ export function filterGraphs() {
 
   return (store: Store<State>) => {
     store.subscribe((mut, state) => {
-      console.group(mut.type);
+      console.groupCollapsed(mut.type);
       console.log(mut);
       console.log(state);
       console.groupEnd();

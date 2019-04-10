@@ -5,7 +5,7 @@
             <div class="spacer"></div>
             <Tabs v-if="!!tabs" :tabState="tabs.category" :action="changeCategory"></Tabs>
             <div class="button">
-                <button>DOWNLOAD EXCEL</button>
+                <button v-on:click="download()">DOWNLOAD EXCEL</button>
             </div>
         </div>
         <hr>
@@ -26,12 +26,14 @@ import Component from 'vue-class-component';
 import Tabs from '../components/Tabs.vue';
 import GraphComp from '../components/Graph.vue';
 import DataTile from '../components/DataTile.vue';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, Store } from 'vuex';
 import ServiceProvider from '@/ServiceProvider';
 import Tab from '@/models/Tab';
 import { GraphTypes } from '@/models/GraphTypes';
+import { State } from '../store';
 
 @Component({
+    
     components: { Tabs, GraphComp, DataTile },
     computed: mapState(['tabs', 'cards', 'selectedGraph', 'graphs'])
 })
@@ -112,7 +114,38 @@ export default class Overview extends Vue {
             ]
         });
         this.$forceUpdate();
-    }    
+    }
+
+    download() {
+        let s = (this.$store as Store<State>);
+        let data = [];
+
+        data.push({name: 'Cards', data: s.state.cardsRaw});
+        data.push({name: 'Members', data: s.state.members});
+        data.push({name: 'Custom Field Codes', data: s.state.codes.filter(c => !c.options)});
+
+        // We want to normalize codes by their options so they are easier to use in excel.
+        // We also want to spread each list code type into its own sheet (non list codes all get dumped to the codes sheet).
+        // For each item look over its options. push that option to a normalized array.
+        // We spread all properties of the option to the code obj but to avoid name conflicts we prepend 'option_' to each prop.
+        s.state.codes.filter(c => !!c.options).forEach((c, ci) => {
+            let codes = [];
+            c.options.forEach((o, oi) => {
+                let nO = {};
+                let keys = Object.keys(o);
+                keys.forEach(k => {
+                    nO['option_'+k] = o[k];
+                });
+                codes.push({...c, ...nO});
+            });
+            data.push({name: c.name.replace(/[\/?*\[\]] /, ''), data: codes});
+        });
+
+        console.log(data);
+
+        let mapped = ServiceProvider.excelService.MapJsonToXLSX(data);
+        ServiceProvider.excelService.DownloadWorkSheet(mapped);
+    }
 }
 </script>
 
@@ -195,6 +228,12 @@ export default class Overview extends Vue {
             text-align: center;
             padding: 9.2px 42px;
             font-size: 1em;
+            transition: all 250ms ease-in;
+
+            &:hover {
+                cursor: pointer;
+                background-color: darken($deepPurple, 10%);
+            }
         }
     }
 
