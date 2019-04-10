@@ -1,4 +1,5 @@
 import Store from './store';
+import util from 'util';
 
 export function getState() {
     if (document.visibilityState === 'hidden') {
@@ -36,7 +37,10 @@ export default class BootstrapLifecycle {
             this.messageChannel = new MessageChannel();
             this.messageChannel.port1.onmessage = e => {
                 console.log(e);
-                Store.replaceState(e.data.payload);
+                if(e.data && e.data.payload && Object.keys(e.data.payload).length > 2) {
+                    Store.replaceState(e.data.payload);
+                    Store.dispatch('updateAllGraphs');
+                }
             }
             navigator.serviceWorker.controller.postMessage({command: cacheActions.RestoreState}, [this.messageChannel.port2]);
         }
@@ -44,8 +48,10 @@ export default class BootstrapLifecycle {
 
     setData(data: any) {
         console.log(data);
-        if (navigator && navigator.serviceWorker && navigator.serviceWorker.controller) {
+        if (navigator && navigator.serviceWorker && navigator.serviceWorker.controller && Object.keys(data).length > 0) {
             this.messageChannel = new MessageChannel();
+            delete data.selectedGraph.config;
+            delete data.graphs;
             navigator.serviceWorker.controller.postMessage({command: cacheActions.DumpState, payload: data  }, [this.messageChannel.port2]);
         }
     }

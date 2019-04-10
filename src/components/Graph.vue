@@ -20,15 +20,18 @@ export default class GraphComp extends Vue {
   graph: Chart | undefined = undefined;
   
   id = Math.random();
+  firstCall = true;
 
   @Watch('graphConfig')
   draw() {
+    this.graphConfig = this.$store.state.selectedGraph;
     var canvas = document.getElementById(`${this.id}`) as HTMLCanvasElement;
     if(canvas && this.graphConfig) {
       if(!!this.graph) {
-        this.graph.destroy();
+        this.graph.data = this.graphConfig.config.data;
+      } else {
+        this.graph = new Chart(canvas.getContext('2d'), {...this.graphConfig.config});
       }
-      this.graph = new Chart(canvas.getContext('2d'), {...this.graphConfig.config});
     }
   }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="tabs" :class="{[color]: true}" v-if="!!tabState">
-        <button class="tab" v-on:click="select({...tab}, index)" v-bind:class="{active: (selected === index)}" v-for="(tab, index) in tabState.list" :key="tab.name">{{tab.name}}</button>
+        <button class="tab" v-on:click="select({...tab}, index)" v-bind:class="{active: (categoryTabs.activeIndex === index)}" v-for="(tab, index) in tabState.list" :key="tab.name">{{tab.name}}</button>
     </div>
 </template>
 
@@ -10,8 +10,11 @@ import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import Tab from '../models/Tab';
 import { tabType } from '@/models/TabType';
+import { mapState } from 'vuex';
 
-@Component
+@Component({
+    computed: mapState(['categoryTabs'])
+})
 export default class Tabs extends Vue {
 
     @Prop()
@@ -25,10 +28,7 @@ export default class Tabs extends Vue {
     @Prop()
     private action?: (tab: Tab, index: number) => void; 
 
-    private selected = 0;
-
     select(tab: Tab, index: number) {
-        this.selected = index;
         if(this.action) {
             this.action(tab, index);
         }

@@ -3,7 +3,7 @@
         <div class="header">
             <h2>Overview</h2>
             <div class="spacer"></div>
-            <Tabs v-if="!!tabs" :tabState="tabs.category" :action="changeCategory"></Tabs>
+            <Tabs v-if="!!categoryTabs" :tabState="categoryTabs" :action="changeCategory"></Tabs>
             <div class="button">
                 <button v-on:click="download()">DOWNLOAD EXCEL</button>
             </div>
@@ -35,11 +35,10 @@ import { State } from '../store';
 @Component({
     
     components: { Tabs, GraphComp, DataTile },
-    computed: mapState(['tabs', 'cards', 'selectedGraph', 'graphs'])
+    computed: mapState(['categoryTabs', 'cards', 'selectedGraph', 'graphs'])
 })
 export default class Overview extends Vue {
     async mounted() {
-        this.setTabs();
         await this.loadGraphData();
     }
 
@@ -48,69 +47,30 @@ export default class Overview extends Vue {
         let customFields = await ServiceProvider.dataService.getCustomFieldDefinitions();
         let members = await ServiceProvider.dataService.getBoardMembers();
 
-        let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork({arr: cards, codes: customFields}));
-        let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency({arr: cards, codes: customFields}));
-
-        let graphs = [
-            CountPerTOW,
-            CountPerAgency
+        let tabs = [
+            {
+                name: 'Type of Work',
+                value: GraphTypes.CountPerTOW
+            },
+            {
+                name: 'Contract',
+                value: GraphTypes.CountPerAgency
+            }
         ];
 
+        this.$store.commit('setCategoryTabs', { activeIndex: 0, list: tabs});
         this.$store.commit('setMemberList', members);
         this.$store.commit('setCodeList', customFields);
         this.$store.commit('setCardList', ServiceProvider.mapDataService.CardsToDataTile({arr: cards, codes: customFields, members: members}));
         this.$store.commit('setSprintList', ServiceProvider.mapDataService.SprintListFromCustomData({codes: customFields}));
-        this.$store.commit('setGraphList', graphs);
-        this.$store.commit('setSelectedGraph', graphs[0]);
         this.$store.commit('setCardRawList', cards);
+        this.$store.dispatch('updateAllGraphs');
+
     }
 
     changeCategory(tab: Tab) {
         this.$store.commit('setCategoryFilter', tab);
         this.$store.dispatch('updateSelectedGraph');
-    }
-
-    setTabs() {
-        this.$store.commit('setCategoryTabs', {
-            activeIndex: 0,
-            list: [
-                {
-                    name: 'Type of Work',
-                    value: GraphTypes.CountPerTOW
-                },
-                {
-                    name: 'Contract',
-                    value: GraphTypes.CountPerAgency
-                },
-                {
-                    name: 'Owner',
-                    value: 'OWNER'
-                },
-                {
-                    name: 'Status',
-                    value: 'STATUS'
-                }
-            ]
-        });
-
-        this.$store.commit('setRangeTabs', {
-            activeIndex: 0,
-            list: [
-                {
-                    name: 'Today',
-                    value: 'TODAY'
-                },
-                {
-                    name: 'Week',
-                    value: 'WEEK'
-                },
-                {
-                    name: 'Sprint',
-                    value: 'SPRINT'
-                }
-            ]
-        });
-        this.$forceUpdate();
     }
 
     download() {

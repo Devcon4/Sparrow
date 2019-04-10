@@ -7,6 +7,7 @@ import Member from './models/Member';
 import { customFieldCodeOptions, customFieldCodes, cardType } from './MapDataService';
 import ServiceProvider from './ServiceProvider';
 import Card from './models/Card';
+import { GraphTypes } from './models/GraphTypes';
 // import createLogger from 'vuex/dist/logger';
 Vue.use(Vuex);
 
@@ -15,7 +16,7 @@ export class State {
     Object.assign({},this, args);
   }
 
-  public tabs: {[key: string]: tabType} = {};
+  public categoryTabs: tabType = null;
   public selectedRange: Tab = null;
   public selectedCategory: Tab = null;
   public selectedGraph: Graph = null;
@@ -26,26 +27,21 @@ export class State {
   public sprints: customFieldCodeOptions[] = [];
   public currentSprintId: string = null;
   public codes: customFieldCodes[] = [];
+  public daysOfMonth: {total: number, remaining: number};
 }
 
 export default new Vuex.Store({
-  state: new State({
-    tabs: {
-      category: null,
-      range: null
-    }
-  }),
+  state: new State({}),
   plugins: [filterGraphs()],
   mutations: {
-    setCategoryTabs(state, data) {
-      if(!state.tabs) { state.tabs = {}; }
-      state.tabs.category = {...data};
-      state.selectedCategory = state.tabs.category.list[0];
+    setDaysOfMonth(state) {
+      let today = new Date();
+      let daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+      
+      state.daysOfMonth = {total: daysInMonth, remaining = daysInMonth - today.getDate()};
     },
-    setRangeTabs(state, data) {
-      if(!state.tabs) { state.tabs = {}; }
-      state.tabs.range = {...data};
-      state.selectedRange = state.tabs.range.list[0];
+    setCategoryTabs(state, data) {
+      state.categoryTabs = {...data};
     },
     setMemberList(state, list) {
       state.members = [...list];
@@ -53,7 +49,7 @@ export default new Vuex.Store({
     setGraphList(state, list) {
       state.graphs = [...list];
     },
-    setSelectedGraph(state, graph) {
+    setSelectedGraph(state, graph: Graph) {
       state.selectedGraph = graph;
     },
     setRangeFilter(state, tab) {
@@ -61,6 +57,7 @@ export default new Vuex.Store({
     },
     setCategoryFilter(state, tab) {
       state.selectedCategory = tab;
+      state.categoryTabs.activeIndex = state.categoryTabs.list.findIndex(t => t.value === tab.value);
     },
     setCardList(state, list) {
       state.cards = list;
@@ -81,16 +78,23 @@ export default new Vuex.Store({
   getters: {},
   actions: {
     updateAllGraphs({commit, state}) {
-      if(state.cards && state.codes && state.members && state.currentSprintId) {
+      console.log('UpdateAllGraphs!');
+      if(state.cardsRaw && state.cardsRaw.length>0 && state.codes && state.codes.length>0 && state.members && state.members.length>0) {
         let data = {arr: state.cardsRaw, codes: state.codes, members: state.members, currentSprint: state.currentSprintId};
-        let newGraphs = [];
-        state.graphs.forEach((g, i) => {
-          let newData = ServiceProvider.graphService.graphTypeToMethodMap[g.code](ServiceProvider.mapDataService.graphTypeToMethodMap[g.code](data));
-          newGraphs.push(newData);
-        });
+        let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(data));
+        let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency(data));
+
+        let newGraphs = [
+            CountPerTOW,
+            CountPerAgency
+        ];
+
+        let matchingTab = state.selectedGraph ? state.categoryTabs.list.find(t => t.value === state.selectedGraph.code) : state.categoryTabs.list[state.categoryTabs.activeIndex];
 
         commit('setCardList', ServiceProvider.mapDataService.CardsToDataTile(data));
         commit('setGraphList', newGraphs);
+        commit('setCategoryFilter', matchingTab);
+        commit('setSelectedGraph', state.selectedCategory.value ? newGraphs.find(g => g.code === state.selectedCategory.value) : newGraphs[0]);
       }
     },
     updateSelectedGraph({commit, state}) {

@@ -8,10 +8,16 @@
             </md-select>
             </md-field>
         </div>
-        <!-- <input type="text" list="sprint_list" v-model="currentSprintId">
-        <datalist name="sprint" id="sprint_list">
-            <option v-for="sprint in sprints" :key="sprint.id" :value="sprint.id">{{sprint.value.text}}</option>
-        </datalist> -->
+        <div class="content">
+            <div class="stat">
+                <div class="count-all">{{cardsRaw.length}}</div>
+                <div class="desc">TOTAL CARDS</div>
+            </div>
+            <div class="stat">
+                <div class="count-current">{{cards.length}}</div>
+                <div class="desc">CARDS THIS SPRINT</div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -22,7 +28,7 @@ import ServiceProvider from '../ServiceProvider';
 import { mapState } from 'vuex';
 
 @Component({
-    computed: mapState(['sprints'])
+    computed: mapState(['sprints', 'cardsRaw', 'cards'])
 })
 export default class Header extends Vue {
 
@@ -39,6 +45,40 @@ export default class Header extends Vue {
 
 <style lang="scss" scoped>
 @import '../styles';
+
+    .content {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        
+        * {
+            font-family: rift-soft, sans-serif;
+            font-weight: 300;
+        }
+
+        .desc {
+            
+        }
+
+        .count-all, .count-current { 
+            font-size: 72px;
+            height: 45px;
+        }
+
+        .count-all {
+            color: $purple;
+        }
+
+        .count-current {
+            color: $yellow;
+        }
+    }
 
     .header {
         display: flex;
@@ -63,7 +103,7 @@ export default class Header extends Vue {
         color: white;
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
-        background-color: $purple;
+        background-color: $deepPurple;
         outline: none;
         border: 0px;
         color: white;
