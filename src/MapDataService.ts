@@ -30,34 +30,58 @@ export default class MapDataService {
 
     CardsToDataTile({arr = [], codes = [], members = [], currentSprint}: Data) {
         let towField = codes.find(c => c.name === 'Type of Work');
-        return MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).map<Card>(c => ({id: c.id, title: c.name, typeOfWorkName: (towField.options.find(o => o.id === (c.customFieldItems.find(i => i.idCustomField === towField.id) || {idValue: null}).idValue) || {value: {text: ''}}).value.text , members: (c.idMembers.map(i => members.find(m => m.id === i).fullName) || []).join(', ') || 'none' }))
+        return MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).map<Card>(c => ({id: c.id, title: c.name, typeOfWorkName: (towField.options.find(o => o.id === (c.customFieldItems.find(i => i.idCustomField === towField.id) || {idValue: null}).idValue) || {value: {text: ''}}).value.text , members: (c.idMembers.map(i => members.find(m => m.id === i).fullName) || []).join(', ') || 'none' })).sort(function(a, b) {
+            var textA = a.typeOfWorkName.toUpperCase();
+            var textB = b.typeOfWorkName.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        })
     }
 
     CardsGroupedByTypeOfWork({arr = [], codes = [], currentSprint}: Data) {
         let sprintField = codes.find(c => c.name === 'Sprint');
         let currentOption = sprintField.options.find(o => o.id === currentSprint);
-        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Type of Work' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Type of Work').id)}));
+        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Type of Work' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Type of Work').id)})).sort(function(a, b) {
+            var textA = a.name.toUpperCase();
+            var textB = b.name.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
         let grouped = countBy(normalizeTOW, d => d.field.idValue);
         let final = {};
         let code = codes.find(c => c.name === 'Type of Work');
         if(!code || !code.options) { return []; }
-        code.options.forEach(c => final[c.value.text] = grouped[c.id] || 0);
+        code.options.sort(function(a, b) {
+            var textA = a.value.text.toUpperCase();
+            var textB = b.value.text.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        }).forEach(c => final[c.value.text] = grouped[c.id] || 0);
         return final;
     }
 
     CardsGroupedByAgency({arr = [], codes = [], currentSprint}: Data) {
-        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Project / Contract' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Project / Contract').id)}));
+        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Project / Contract' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Project / Contract').id)})).sort(function(a, b) {
+            var textA = a.name.toUpperCase();
+            var textB = b.name.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
         let grouped = countBy(normalizeTOW, d => d.field.idValue);
         let final = {};
         let code = codes.find(c => c.name === 'Project / Contract')
         if(!code || !code.options) { return []; }
-        code.options.forEach(c => final[c.value.text] = grouped[c.id] || 0);
+        code.options.sort(function(a, b) {
+            var textA = a.value.text.toUpperCase();
+            var textB = b.value.text.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        }).forEach(c => final[c.value.text] = grouped[c.id] || 0);
         return final;
     }
 
     SprintListFromCustomData({codes = []}: Data) {
         let code = codes.find(a => a.name === 'Sprint');
         if(!code || !code.options) { return []; }
-        return code.options;
+        return code.options.sort(function(a, b) {
+            var textA = a.value.text.toUpperCase();
+            var textB = b.value.text.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
     }
 }

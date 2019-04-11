@@ -11,7 +11,7 @@
             <div class="desc">Fly-by workload data visualizations</div>
         </div>
         <div class="team">
-            <div class="team-header">TEAM DATA</div>
+            <div class="team-header">TEAM MEMBERS</div>
             <ProfileCard v-for="member in members" :key="member.id" :member="member"></ProfileCard>
         </div>
     </div>
