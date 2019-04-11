@@ -58,6 +58,7 @@ export default class Overview extends Vue {
             }
         ];
 
+        this.$store.commit('setDaysOfMonth');
         this.$store.commit('setCategoryTabs', { activeIndex: 0, list: tabs});
         this.$store.commit('setMemberList', members);
         this.$store.commit('setCodeList', customFields);

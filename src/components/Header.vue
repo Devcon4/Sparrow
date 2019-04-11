@@ -13,6 +13,11 @@
                 <div class="count-all">{{cardsRaw.length}}</div>
                 <div class="desc">TOTAL CARDS</div>
             </div>
+            <div class="stat" v-if="daysOfMonth">
+                <div class="spinner-inner-wrapper"> <div class="spinner-inner"> <div class="spinner-inner-real"> {{daysOfMonth.percent | simplifyPercentage}}%</div></div></div>
+                <md-progress-spinner :md-diameter="80" class="md-accent"  md-mode="determinate" :md-value="daysOfMonth.percent"></md-progress-spinner>
+                <div class="desc">SPRINT COMPLETED</div>
+            </div>
             <div class="stat">
                 <div class="count-current">{{cards.length}}</div>
                 <div class="desc">CARDS THIS SPRINT</div>
@@ -28,7 +33,12 @@ import ServiceProvider from '../ServiceProvider';
 import { mapState } from 'vuex';
 
 @Component({
-    computed: mapState(['sprints', 'cardsRaw', 'cards'])
+    computed: mapState(['sprints', 'cardsRaw', 'cards', 'daysOfMonth']),
+    filters: {
+        simplifyPercentage(value: number) {
+            return Math.trunc(value);
+        }
+    }
 })
 export default class Header extends Vue {
 
@@ -52,11 +62,35 @@ export default class Header extends Vue {
         justify-content: space-around;
     }
 
+    .spinner-inner {
+        height: 80px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .spinner-inner-real {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 80px;
+        font-size: 1.5em;
+        background-color: $deepPurple;
+    }
+
+    .spinner-inner-wrapper {
+        height: 0;
+    }
+
     .stat {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        
+        align-items: center;
+
         * {
             font-family: rift-soft, sans-serif;
             font-weight: 300;
@@ -89,6 +123,7 @@ export default class Header extends Vue {
         background-color: $dusk;
         border-bottom-left-radius: 24px;
         border-bottom-right-radius: 24px;
+        z-index: 1;
     }
 
     .sprint-input {

@@ -27,7 +27,7 @@ export class State {
   public sprints: customFieldCodeOptions[] = [];
   public currentSprintId: string = null;
   public codes: customFieldCodes[] = [];
-  public daysOfMonth: {total: number, remaining: number};
+  public daysOfMonth: {total: number, remaining: number, percent: number} = null;
 }
 
 export default new Vuex.Store({
@@ -37,8 +37,8 @@ export default new Vuex.Store({
     setDaysOfMonth(state) {
       let today = new Date();
       let daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-      
-      state.daysOfMonth = {total: daysInMonth, remaining = daysInMonth - today.getDate()};
+      let remaining = daysInMonth - today.getDate();
+      state.daysOfMonth = {total: daysInMonth, remaining, percent: (today.getDate()/daysInMonth) * 100};
     },
     setCategoryTabs(state, data) {
       state.categoryTabs = {...data};
