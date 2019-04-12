@@ -28,7 +28,9 @@ export default class GraphComp extends Vue {
     var canvas = document.getElementById(`${this.id}`) as HTMLCanvasElement;
     if(canvas && this.graphConfig) {
       if(!!this.graph) {
-        this.graph.data = this.graphConfig.config.data;
+        this.graph.data = this.$store.state.selectedGraph.config.data;
+
+        this.graph.update();
       } else {
         this.graph = new Chart(canvas.getContext('2d'), {...this.graphConfig.config});
       }
