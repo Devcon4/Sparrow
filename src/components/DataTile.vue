@@ -1,6 +1,6 @@
 <template>
     <div class="data-tile" v-if="!!card">
-        <div class="tow">{{card.typeOfWorkName}}</div>
+        <div class="tow">{{card.categoryName}}</div>
         <div class="name">{{card.title}}</div>
         <div class="members">{{card.members}}</div>
     </div>
