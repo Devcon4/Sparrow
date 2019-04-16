@@ -84,13 +84,12 @@ export default class Sidebar extends Vue {
     .icon {
         width: 100px;
         height: 100px;
+        // animation: icon-shadow linear 10s infinite;
         filter: drop-shadow(0px 12px 18px $purple);
-        
+
         img {
             transform: scale(2.2);
         }
-
-
     }
 
     .circle {
@@ -101,4 +100,13 @@ export default class Sidebar extends Vue {
         clip-path: circle(50% at 50% 50%);
 
     }
+
+    @keyframes icon-shadow {
+        0%   { filter: drop-shadow(-6px 6px 18px $purple); }
+        25%  { filter: drop-shadow(6px 6px 18px $purple); }
+        50%  { filter: drop-shadow(6px -6px 18px $purple); }
+        75%  { filter: drop-shadow(-6px -6px 18px $purple); }
+        100% { filter: drop-shadow(-6px 6px 18px $purple); }
+    }
+
 </style>
