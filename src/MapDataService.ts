@@ -12,11 +12,6 @@ type Data = {arr?: cardType[], codes?: customFieldCodes[], members?: Member[], c
 
 export default class MapDataService {
 
-    public graphTypeToMethodMap = {
-        [GraphTypes.CountPerAgency]: this.CardsGroupedByAgency,
-        [GraphTypes.CountPerTOW]: this.CardsGroupedByTypeOfWork,
-      }
-
     CardsCompletedCount({arr = []}: Data) {
         return arr.filter(d => d.closed === false).length;
     }
@@ -37,17 +32,15 @@ export default class MapDataService {
         })
     }
 
-    CardsGroupedByTypeOfWork({arr = [], codes = [], currentSprint}: Data) {
-        let sprintField = codes.find(c => c.name === 'Sprint');
-        let currentOption = sprintField.options.find(o => o.id === currentSprint);
-        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Type of Work' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Type of Work').id)})).sort(function(a, b) {
+    private groupByCode = codeName => ({arr = [], codes = [], currentSprint}: Data) => {
+        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === codeName && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === codeName).id)})).sort(function(a, b) {
             var textA = a.name.toUpperCase();
             var textB = b.name.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
         let grouped = countBy(normalizeTOW, d => d.field.idValue);
         let final = {};
-        let code = codes.find(c => c.name === 'Type of Work');
+        let code = codes.find(c => c.name === codeName);
         if(!code || !code.options) { return []; }
         code.options.sort(function(a, b) {
             var textA = a.value.text.toUpperCase();
@@ -56,25 +49,7 @@ export default class MapDataService {
         }).forEach(c => final[c.value.text] = grouped[c.id] || 0);
         return final;
     }
-
-    CardsGroupedByAgency({arr = [], codes = [], currentSprint}: Data) {
-        let normalizeTOW = MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).filter(d => d.customFieldItems.some(i => codes.some(c => c.name === 'Project / Contract' && c.id === i.idCustomField))).map(d => ({...d, field: d.customFieldItems.find(i => i.idCustomField === codes.find(c => c.name === 'Project / Contract').id)})).sort(function(a, b) {
-            var textA = a.name.toUpperCase();
-            var textB = b.name.toUpperCase();
-            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-        });
-        let grouped = countBy(normalizeTOW, d => d.field.idValue);
-        let final = {};
-        let code = codes.find(c => c.name === 'Project / Contract')
-        if(!code || !code.options) { return []; }
-        code.options.sort(function(a, b) {
-            var textA = a.value.text.toUpperCase();
-            var textB = b.value.text.toUpperCase();
-            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-        }).forEach(c => final[c.value.text] = grouped[c.id] || 0);
-        return final;
-    }
-
+    
     SprintListFromCustomData({codes = []}: Data) {
         let code = codes.find(a => a.name === 'Sprint');
         if(!code || !code.options) { return []; }
@@ -83,5 +58,18 @@ export default class MapDataService {
             var textB = b.value.text.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
+    }
+
+    public CardsGroupedByTypeOfWork = this.groupByCode('Type of Work');
+    public CardsGroupedByAgency = this.groupByCode('Project / Contract');
+    public CardsGroupedByCategory = this.groupByCode('Category');
+    public CardsGroupedByTool = this.groupByCode('Tool');
+    public CardsGroupedByType = this.groupByCode('Type');
+    
+    public graphTypeToMethodMap = {
+        [GraphTypes.CountPerAgency]: this.CardsGroupedByAgency,
+        [GraphTypes.CountPerTOW]: this.CardsGroupedByTypeOfWork,
+        [GraphTypes.CountPerCategory]: this.CardsGroupedByCategory,
+        [GraphTypes.CountPerTool]: this.CardsGroupedByTool
     }
 }

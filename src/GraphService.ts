@@ -57,6 +57,152 @@ export default class GraphService {
     [GraphTypes.CountPerTOW]: this.GetGraphForTOW,
   }
 
+  public GetGraphForTool(data: {[k: string]: number} = {}): Graph {
+    let labels = Object.keys(data);
+    let values = Object.values(data);
+    let empty = new Array(...values.map(v => new Array(values.length)));
+
+    return new Graph({
+      code: GraphTypes.CountPerTool,
+      config: {
+        type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [
+                // ...values.map<Chart.ChartDataSets>((v, i) => ({
+                //   label: labels[i],
+                //   data: (empty[i][i] = v, empty[i]),
+                //   backgroundColor: this.graphColors[i%this.graphColors.length],
+                //   borderColor: this.borderColors[i%this.borderColors.length],
+                //   borderWidth: 1
+                // })),
+                {
+                label: '# of cards',
+                data: values,
+                backgroundColor: values.map((v, i) => GraphService.graphColors[i%GraphService.graphColors.length]),
+                borderColor: values.map((v, i) => GraphService.borderColors[i%GraphService.borderColors.length]),
+                borderWidth: 1
+              }]
+          },
+          options: {
+            cutoutPercentage: 60,
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: {
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0
+              }
+            },
+            legend: {
+              display: false,
+              position: 'left',
+              labels: {
+                fontColor: 'white'
+              }
+            },
+            scales: {
+              yAxes: [{
+                gridLines: {
+                  display: false,
+                  color: '#666'
+                },
+                ticks: {
+                  fontColor: 'white'
+                }
+              }],
+              xAxes: [{
+  
+                gridLines: {
+                  display: false,
+                  color: '#fff'
+                },
+                ticks: {
+                  autoSkip: false,
+                  fontColor: 'white'
+                }
+              }]
+            }
+          }
+      }
+    });
+  }
+
+  public GetGraphForType(data: {[k: string]: number} = {}): Graph {
+    let labels = Object.keys(data);
+    let values = Object.values(data);
+    let empty = new Array(...values.map(v => new Array(values.length)));
+
+    return new Graph({
+      code: GraphTypes.CountPerType,
+      config: {
+        type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [
+                // ...values.map<Chart.ChartDataSets>((v, i) => ({
+                //   label: labels[i],
+                //   data: (empty[i][i] = v, empty[i]),
+                //   backgroundColor: this.graphColors[i%this.graphColors.length],
+                //   borderColor: this.borderColors[i%this.borderColors.length],
+                //   borderWidth: 1
+                // })),
+                {
+                label: '# of cards',
+                data: values,
+                backgroundColor: values.map((v, i) => GraphService.graphColors[i%GraphService.graphColors.length]),
+                borderColor: values.map((v, i) => GraphService.borderColors[i%GraphService.borderColors.length]),
+                borderWidth: 1
+              }]
+          },
+          options: {
+            cutoutPercentage: 60,
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: {
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0
+              }
+            },
+            legend: {
+              display: false,
+              position: 'left',
+              labels: {
+                fontColor: 'white'
+              }
+            },
+            scales: {
+              yAxes: [{
+                gridLines: {
+                  display: false,
+                  color: '#666'
+                },
+                ticks: {
+                  fontColor: 'white'
+                }
+              }],
+              xAxes: [{
+  
+                gridLines: {
+                  display: false,
+                  color: '#fff'
+                },
+                ticks: {
+                  autoSkip: false,
+                  fontColor: 'white'
+                }
+              }]
+            }
+          }
+      }
+    });
+  }
+
   public GetGraphForTasksPerAgency(data: {[k: string]: number} = {}): Graph {
     let labels = Object.keys(data);
     let values = Object.values(data);
@@ -203,6 +349,98 @@ export default class GraphService {
     });
   }
 
+  public GetGraphForCategory(data: {[k: string]: number} = {}): Graph {
+    let labels = Object.keys(data).sort((a, b) => {
+        var textA = a.toUpperCase();
+        var textB = b.toUpperCase();
+        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+    });
+    let values = Object.values(data).sort((a, b) => (a > b) ? -1 : (a > b) ? 1 : 0);
+    let empty = new Array(...values.map(v => new Array(values.length)));
+
+    return new Graph({
+      code: GraphTypes.CountPerCategory,
+      config: {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [
+              // ...values.map<Chart.ChartDataSets>((v, i) => ({
+              //   label: labels[i],
+              //   data: (empty[i][i] = v, empty[i]),
+              //   backgroundColor: this.graphColors[i%this.graphColors.length],
+              //   borderColor: this.borderColors[i%this.borderColors.length],
+              //   borderWidth: 1
+              // })),
+              {
+              label: '# of cards',
+              data: values,
+              backgroundColor: values.map((v, i) => GraphService.graphColors[i%GraphService.graphColors.length]),
+              borderColor: values.map((v, i) => GraphService.borderColors[i%GraphService.borderColors.length]),
+              borderWidth: 1
+            }]
+        },
+        options: {
+          cutoutPercentage: 60,
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 0,
+              right: 0,
+              bottom: 0,
+              top: 0
+            }
+          },
+          legend: {
+            display: true,
+            position: 'left',
+            labels: {
+              fontColor: 'white'
+            }
+          },
+          tooltips: {
+            callbacks: {
+              label: function(tooltipItem, data) {
+                //get the concerned dataset
+                var dataset = data.datasets[tooltipItem.datasetIndex];
+                //calculate the total of this data set
+                var total = (dataset.data as any).reduce((prev, curr) => prev += curr);
+                //get the current items value
+                var currentValue = dataset.data[tooltipItem.index] as number;
+                //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+                var percentage = Math.floor(((currentValue/total) * 100)+0.5);
+          
+                return data.labels[tooltipItem.index] + ': ' + percentage + "%";
+              }
+            }
+          },
+          // scales: {
+          //   yAxes: [{
+          //     gridLines: {
+          //       display: false,
+          //       color: '#fff'
+          //     },
+          //     ticks: {
+          //       fontColor: 'white'
+          //     }
+          //   }],
+          //   xAxes: [{
+
+          //     gridLines: {
+          //       display: false,
+          //       color: '#fff'
+          //     },
+          //     ticks: {
+          //       fontColor: 'white'
+          //     }
+          //   }]
+          // }
+        }
+      }
+    });
+  }
+
   public GetGraphForTOW(data: {[k: string]: number} = {}): Graph {
     let labels = Object.keys(data);
     let values = Object.values(data);
@@ -271,6 +509,7 @@ export default class GraphService {
           //   }]
           // }
         }
-      }});
-    }
+      }
+    });
+  }
 }

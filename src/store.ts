@@ -83,10 +83,16 @@ export default new Vuex.Store({
         let data = {arr: state.cardsRaw, codes: state.codes, members: state.members, currentSprint: state.currentSprintId};
         let CountPerTOW = ServiceProvider.graphService.GetGraphForTOW(ServiceProvider.mapDataService.CardsGroupedByTypeOfWork(data));
         let CountPerAgency = ServiceProvider.graphService.GetGraphForTasksPerAgency(ServiceProvider.mapDataService.CardsGroupedByAgency(data));
+        let CountPerCategory = ServiceProvider.graphService.GetGraphForCategory(ServiceProvider.mapDataService.CardsGroupedByCategory(data));
+        let CountPerTool = ServiceProvider.graphService.GetGraphForTool(ServiceProvider.mapDataService.CardsGroupedByTool(data));
+        let CountPerType = ServiceProvider.graphService.GetGraphForType(ServiceProvider.mapDataService.CardsGroupedByType(data));
 
         let newGraphs = [
-            CountPerTOW,
-            CountPerAgency
+            //CountPerTOW,
+            CountPerAgency,
+            CountPerCategory,
+            CountPerTool,
+            CountPerType
         ];
 
         let matchingTab = state.selectedGraph ? state.categoryTabs.list.find(t => t.value === state.selectedGraph.code) : state.categoryTabs.list[state.categoryTabs.activeIndex];

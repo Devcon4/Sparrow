@@ -1,4 +1,7 @@
 export enum GraphTypes {
   CountPerAgency = 'COUNTPERAGENCY',
-  CountPerTOW = 'COUNTPERTOW'
+  CountPerTOW = 'COUNTPERTOW',
+  CountPerCategory = 'COUNTPERCATEGORY',
+  CountPerTool = 'COUNTPERTOOL',
+  CountPerType = 'COUNTPERTYPE'
 }

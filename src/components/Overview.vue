@@ -48,14 +48,26 @@ export default class Overview extends Vue {
         let members = await ServiceProvider.dataService.getBoardMembers();
 
         let tabs = [
+            // {
+            //     name: 'Type of Work',
+            //     value: GraphTypes.CountPerTOW
+            // },
             {
-                name: 'Type of Work',
-                value: GraphTypes.CountPerTOW
+                name: 'Category',
+                value: GraphTypes.CountPerCategory
             },
             {
                 name: 'Contract',
                 value: GraphTypes.CountPerAgency
-            }
+            },
+            {
+                name: 'Tool',
+                value: GraphTypes.CountPerTool
+            },
+            {
+                name: 'Type',
+                value: GraphTypes.CountPerType
+            },
         ];
 
         this.$store.commit('setDaysOfMonth');
