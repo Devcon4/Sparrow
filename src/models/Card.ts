@@ -1,6 +1,6 @@
 export default class Card {
   public id = '';
-  public typeOfWorkName = '';
+  public categoryName = '';
   public title = '';
   public members: string = '';
   constructor(init: Partial<Card>) {

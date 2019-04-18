@@ -24,10 +24,10 @@ export default class MapDataService {
     }
 
     CardsToDataTile({arr = [], codes = [], members = [], currentSprint}: Data) {
-        let towField = codes.find(c => c.name === 'Type of Work');
-        return MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).map<Card>(c => ({id: c.id, title: c.name, typeOfWorkName: (towField.options.find(o => o.id === (c.customFieldItems.find(i => i.idCustomField === towField.id) || {idValue: null}).idValue) || {value: {text: ''}}).value.text , members: (c.idMembers.map(i => members.find(m => m.id === i).fullName) || []).join(', ') || 'none' })).sort(function(a, b) {
-            var textA = a.typeOfWorkName.toUpperCase();
-            var textB = b.typeOfWorkName.toUpperCase();
+        let catField = codes.find(c => c.name === 'Category');
+        return MapDataService.FilterCardsToCurrentSprint({arr, codes, currentSprint}).map<Card>(c => ({id: c.id, title: c.name, categoryName: (catField.options.find(o => o.id === (c.customFieldItems.find(i => i.idCustomField === catField.id) || {idValue: null}).idValue) || {value: {text: ''}}).value.text , members: (c.idMembers.map(i => members.find(m => m.id === i).fullName) || []).join(', ') || 'none' })).sort(function(a, b) {
+            var textA = a.categoryName.toUpperCase();
+            var textB = b.categoryName.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         })
     }
